@@ -3,6 +3,8 @@ import os
 import time
 from html.parser import HTMLParser
 from urllib.parse import urljoin
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import requests
 
@@ -76,6 +78,12 @@ def send_discord_notification(message):
 
     if not webhook_url:
         raise RuntimeError("DISCORD_WEBHOOK_URL is not set")
+
+    timestamp = datetime.now(
+        ZoneInfo("Asia/Tokyo")
+    ).strftime("%Y-%m-%d %H:%M:%S JST")
+
+    message = f"🕒 通知時刻: {timestamp}\n\n{message}"
 
     response = requests.post(
         webhook_url,
