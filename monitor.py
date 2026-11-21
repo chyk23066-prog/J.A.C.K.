@@ -11,7 +11,7 @@ import requests
 
 STORE_URL = "https://shop.travisscott.com/"
 STATE_FILE = "seen_products.json"
-NO_CHANGE_INTERVAL = 5 * 60  # 15分（秒）
+NO_CHANGE_INTERVAL = 1 * 60  # 15分（秒）
 
 
 class ProductLinkParser(HTMLParser):
