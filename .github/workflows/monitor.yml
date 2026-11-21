@@ -23,6 +23,15 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
+      - name: Test Discord webhook
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -fsS \
+            -H "Content-Type: application/json" \
+            -d '{"content":"J.A.C.K. webhook test"}' \
+            "$DISCORD_WEBHOOK_URL"
+
       - name: Check store
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
