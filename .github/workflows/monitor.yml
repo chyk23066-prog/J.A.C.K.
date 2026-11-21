@@ -2,7 +2,7 @@ name: Cactus Jack release monitor
 
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
