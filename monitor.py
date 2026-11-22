@@ -11,7 +11,10 @@ import requests
 
 STORE_URL = "https://shop.travisscott.com/"
 STATE_FILE = "seen_products.json"
-NO_CHANGE_INTERVAL = 5 * 60  # 15分（秒）
+
+NO_CHANGE_INTERVAL = 5 * 60  # 変化なし通知の間隔：5分
+CHECK_INTERVAL = 5 * 60      # 商品ページを確認する間隔：5分
+MONITOR_DURATION = 5 * 60 * 60 + 50 * 60  # 監視時間：5時間50分
 
 
 class ProductLinkParser(HTMLParser):
@@ -93,7 +96,7 @@ def send_discord_notification(message):
     response.raise_for_status()
 
 
-def main():
+def check_once():
     now = time.time()
     products = get_products()
     state = load_state()
@@ -106,7 +109,7 @@ def main():
         print("初回実行：現在の商品リンクを保存しました。")
         return
 
-    seen_products = state["products"]
+    seen_products = state.get("products", [])
     last_notice = state.get("last_no_change_notice", now)
 
     new_products = [
@@ -121,7 +124,7 @@ def main():
         send_discord_notification(message)
         print("新商品をDiscordに通知しました。")
 
-        # 新商品通知後、変化なし通知の15分間隔もリセット
+        # 新商品通知後、変化なし通知の間隔もリセット
         last_notice = now
 
     elif now - last_notice >= NO_CHANGE_INTERVAL:
@@ -140,6 +143,26 @@ def main():
         print(f"変化なし。次の通知まで約{remaining}秒です。")
 
     save_state(products, last_notice)
+
+
+def main():
+    start_time = time.monotonic()
+    end_time = start_time + MONITOR_DURATION
+
+    print("監視を開始しました。約5時間50分、5分ごとに確認します。")
+
+    while time.monotonic() < end_time:
+        check_once()
+
+        remaining = end_time - time.monotonic()
+        if remaining <= 0:
+            break
+
+        sleep_time = min(CHECK_INTERVAL, remaining)
+        print(f"次の確認まで約{int(sleep_time)}秒待機します。")
+        time.sleep(sleep_time)
+
+    print("監視時間が終了しました。")
 
 
 if __name__ == "__main__":
