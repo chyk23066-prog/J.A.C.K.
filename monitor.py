@@ -86,7 +86,7 @@ def send_discord_notification(message):
         ZoneInfo("Asia/Tokyo")
     ).strftime("%Y-%m-%d %H:%M:%S JST")
 
-    message = f"🕒 通知時刻: {timestamp}\n\n{message}"
+    message = f"{message}\n\n🕒 通知時刻: {timestamp}"
 
     response = requests.post(
         webhook_url,
