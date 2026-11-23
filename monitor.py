@@ -12,7 +12,7 @@ import requests
 STORE_URL = "https://shop.travisscott.com/"
 STATE_FILE = "seen_products.json"
 
-NO_CHANGE_INTERVAL = 5 * 60  # 変化なし通知の間隔：5分
+NO_CHANGE_INTERVAL = 30 * 60  # 変化なし通知の間隔：5分
 CHECK_INTERVAL = 5 * 60      # 商品ページを確認する間隔：5分
 MONITOR_DURATION = 5 * 60 * 60 + 50 * 60  # 監視時間：5時間50分
 
